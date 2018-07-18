@@ -1,140 +1,68 @@
-const Todo = require('../models/todo.model.js');
-var multer = require('multer');
-var upload    = require('./upload');
-// Create and Save a new Hero
-// Create and Save a new Hero
+var _ = require('lodash');
+
+var todoArr = [];
+var count = 0;
+
 exports.create = (req, res) => {
-    upload(req, res,(error) => {
-        if(error){
-          console.log("error",error);
-        }else{
-            let photo = '';
-            if(req.file && req.file.path){
-                photo = req.file.path;
-            }
-            // Create a Hero
-            let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            const hero = new Hero({
-                name: req.body.name, 
-                superPowers: req.body.superPowers, 
-                gender:req.body.gender || 'Male',
-                galaxy:req.body.galaxy || 1,
-                photo:photo,
-                ip:ip
-            });
+    count++;
+    let todo = {
+        task: req.body.task,
+        isCompleted:req.body.isCompleted || false,
+        updatedDate: new Date(),
+        id: count
+    }
 
-            // Save Hero in the database
-            hero.save()
-            .then(data => {
-                res.send(data);
-            }).catch(err => {
-                res.status(500).send({
-                    message: err.message || "Some error occurred while creating the Hero."
-                });
-            });
-        }
-    });
+    todoArr.push(todo);
 
+    res.send(todo);
 };
 
-// Retrieve and return all Heros from the database.
+// Retrieve and return all todo list from the database.
 exports.findAll = (req, res) => {
 
-    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    res.send(todoArr);
 
-    Hero.find({ip:ip})
-    .then(heroes => {
-        res.send(heroes);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving Heros."
-        });
-    });
 };
 
+// Get one todo task
 exports.findOne = (req, res) => {
-    Hero.findById(req.params.heroId)
-    .then(hero => {
-        if(!hero) {
-            return res.status(404).send({
-                message: "Hero not found with id " + req.params.heroId
-            });            
-        }
-        res.send(hero);
-    }).catch(err => {
-        console.log("err",err)
 
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "Hero not found with id " + req.params.heroId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error retrieving Hero with id " + req.params.heroId
-        });
-    });
+    var task = _.find(todoArr, { id: parseInt(req.params.todoId) });
+
+    console.log("herrrrrrrr", todoArr, task, req.params.todoId)
+
+    res.send(task);
+
 };
 
-// Update a Hero identified by the HeroId in the request
+// Update a todo identified by the todoId in the request
 exports.update = (req, res) => {
 
-    upload(req, res,(error) => {
-        if(error){
-          console.log("error",error);
-        }else{
-            let photo = '';
-            if(req.file && req.file.path){
-                photo = req.file.path;
-            }
-            // Create a Hero
-            let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            // Find Hero and update it with the request body
-            Hero.findByIdAndUpdate(req.params.heroId, {
-                name: req.body.name, 
-                superPowers: req.body.superPowers   , 
-                gender:req.body.gender,
-                galaxy:req.body.galaxy,
-                photo:photo
-            }, {new: true})
-            .then(hero => {
-                if(!hero) {
-                    return res.status(404).send({
-                        message: "Hero not found with id " + req.params.heroId
-                    });
-                }
-                res.send(hero);
-            }).catch(err => {
-                if(err.kind === 'ObjectId') {
-                    return res.status(404).send({
-                        message: "Hero not found with id " + req.params.heroId
-                    });                
-                }
-                return res.status(500).send({
-                    message: "Error updating hero with id " + req.params.heroId
-                });
-            });
+    let sendObj = {};
+    _.forEach(todoArr, (val, key) => {
+        if (val.id == req.params.todoId) {
+            val.task = req.body.task;
+            val.isCompleted=req.body.isCompleted || false,
+            sendObj = val;
         }
     });
+
+    if (!sendObj.task) {
+        return res.status(404).send({
+            message: "Task not found with id " + req.params.todoId
+        });
+    } else {
+        res.send(sendObj);
+    }
 };
 
-// Delete a Hero with the specified HeroId in the request
+// Delete a task with the specified taskId in the request
 exports.delete = (req, res) => {
-    Hero.findByIdAndRemove(req.params.heroId)
-    .then(hero => {
-        if(!hero) {
-            return res.status(404).send({
-                message: "Hero not found with id " + req.params.heroId
-            });
-        }
-        res.send({message: "Hero deleted successfully!"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            return res.status(404).send({
-                message: "Hero not found with id " + req.params.heroId
-            });                
-        }
-        return res.status(500).send({
-            message: "Could not delete hero with id " + req.params.heroId
-        });
-    });
+
+    _.remove(todoArr, (val) => {
+        return val.id == req.params.todoId
+    })
+
+    res.send('success');
+
 };
