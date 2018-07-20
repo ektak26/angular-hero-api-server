@@ -3,8 +3,26 @@ var multer = require('multer');
 var upload    = require('./upload');
 var _ = require('lodash');
 
-var heroArr = [];
-var count = 0;
+var heroArr = [{
+    name:"hero1",
+    canFly:true,
+    gender:'Female',
+    location:'Earth',
+    photo:""
+},{
+    name:"hero2",
+    canFly:true,
+    gender:'Male',
+    location:'Earth',
+    photo:""
+},{
+    name:"hero3",
+    canFly:true,
+    gender:'Male',
+    location:'Earth',
+    photo:""
+}];
+var count = 3;
 // Create and Save a new Hero
 // Create and Save a new Hero
 exports.create = (req, res) => {
