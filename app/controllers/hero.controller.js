@@ -8,19 +8,22 @@ var heroArr = [{
     canFly:true,
     gender:'Female',
     location:'Earth',
-    photo:""
+    photo:"",
+    id:1
 },{
     name:"hero2",
     canFly:true,
     gender:'Male',
     location:'Earth',
-    photo:""
+    photo:"",
+    id:2
 },{
     name:"hero3",
     canFly:true,
     gender:'Male',
     location:'Earth',
-    photo:""
+    photo:"",
+    id:3
 }];
 var count = 3;
 // Create and Save a new Hero
