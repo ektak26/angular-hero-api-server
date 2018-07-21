@@ -6,21 +6,21 @@ var _ = require('lodash');
 var heroArr = [{
     name:"hero1",
     canFly:true,
-    gender:'Female',
+    gender:'female',
     location:'Earth',
     photo:"",
     id:1
 },{
     name:"hero2",
     canFly:true,
-    gender:'Male',
+    gender:'male',
     location:'Earth',
     photo:"",
     id:2
 },{
     name:"hero3",
     canFly:true,
-    gender:'Male',
+    gender:'male',
     location:'Earth',
     photo:"",
     id:3
