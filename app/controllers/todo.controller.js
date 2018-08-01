@@ -6,11 +6,11 @@ var count = 0;
 exports.create = (req, res) => {
     count++;
     let todo = {
-        task: req.body.task,
+        title: req.body.title,
         isCompleted:req.body.isCompleted || false,
         updatedDate: new Date(),
         id: count
-    }
+    };
 
     todoArr.push(todo);
 
@@ -41,8 +41,8 @@ exports.update = (req, res) => {
     let sendObj = {};
     _.forEach(todoArr, (val, key) => {
         if (val.id == req.params.todoId) {
-            val.task = req.body.task;
-            val.isCompleted=req.body.isCompleted || false,
+            val.title = req.body.title;
+            val.isCompleted=req.body.isCompleted || false;
             sendObj = val;
         }
     });
@@ -63,6 +63,6 @@ exports.delete = (req, res) => {
         return val.id == req.params.todoId
     })
 
-    res.send('success');
+    res.send({});
 
 };
